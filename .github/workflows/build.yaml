@@ -1,0 +1,77 @@
+name: Build
+
+on:
+  push:
+    branches: ['main']
+    paths-ignore: ['**/*.md']
+  pull_request:
+    branches: ['main']
+    paths-ignore: ['**/*.md']
+  workflow_dispatch:
+    inputs:
+      backend-ref:
+        description: 'The backend ref to check out (branch name, tag, or commit SHA)'
+        required: false
+        default: 'main'
+      frontend-ref:
+        description: 'The frontend ref to pull the artifact from (branch name, tag, or commit SHA)'
+        required: false
+        default: 'vite'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ 'ubuntu-24.04' ]
+        java: [ '21' ]
+        maven: [ '3.9.9' ]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout distro repository
+        uses: actions/checkout@v4
+
+      - name: Checkout backend repository
+        uses: actions/checkout@v4
+        with:
+          repository: 'llamara-ai/llamara-backend'
+          path: 'llamara-backend'
+          ref: ${{ github.event.inputs.ref || 'main' }}
+
+      - name: Download frontend artifact from GitLab
+        env:
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+          GITLAB_HOST: ${{ secrets.GITLAB_HOST }}
+          FRONTEND_PROJECT: ${{ secrets.FRONTEND_PROJECT }}
+          FRONTEND_BRANCH: ${{ github.event.inputs.frontend-ref || 'vite' }}
+          FRONTEND_JOB: 'build'
+        run: |
+          echo -n "Downloading frontend artifact from GitLab ... "
+          curl --location --output frontend.zip --silent --show-error --header "PRIVATE-TOKEN: $GITLAB_TOKEN" "https://$GITLAB_HOST/api/v4/projects/$FRONTEND_PROJECT/jobs/artifacts/$FRONTEND_BRANCH/download?job=$FRONTEND_JOB"
+          echo "SUCCESS"
+          echo -n "Unzipping frontend artifact ... "
+          unzip frontend.zip
+          echo "DONE"
+          echo -n "Moving frontend files into backend ... "
+          mv dist/* llamara-backend/src/main/resources/META-INF/resources/
+          echo "DONE"
+
+      - name: Maven Build
+        uses: ./llamara-backend/.github/actions/maven-build
+        with:
+          java: ${{ matrix.java }}
+          maven: ${{ matrix.maven }}
+          pom: "llamara-backend/pom.xml"
+          skip_changed_files: 'true'
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+      - name: Upload packaged application
+        uses: actions/upload-artifact@v4
+        with:
+          name: quarkus-app
+          path: |
+            llamara-backend/target/quarkus-app

@@ -46,7 +46,7 @@ jobs:
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
           GITLAB_HOST: ${{ secrets.GITLAB_HOST }}
           FRONTEND_PROJECT: ${{ secrets.FRONTEND_PROJECT }}
-          FRONTEND_REF: ${{ startsWith(github.ref, 'refs/tags/v') && github.ref || 'vite' }}
+          FRONTEND_REF: ${{ startsWith(github.ref, 'refs/tags/v') && github.ref || 'main' }}
           FRONTEND_JOB: 'build'
         run: |
           echo -n "Downloading frontend artifact for ref ${FRONTEND_REF} from GitLab ... "

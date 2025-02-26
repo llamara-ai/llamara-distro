@@ -21,7 +21,7 @@ permissions:
   contents: write
 
 jobs:
-  build:
+  maven:
     name: Maven Build
     strategy:
       matrix:
@@ -76,9 +76,9 @@ jobs:
           path: |
             llamara-backend/target/quarkus-app
 
-  publish-docker:
+  docker:
     name: Docker Build & Publish
-    needs: build
+    needs: maven
 
     runs-on: 'ubuntu-24.04'
 
@@ -158,6 +158,7 @@ jobs:
         id: build-and-push
         uses: docker/build-push-action@v5
         with:
+          platforms: linux/amd64,linux/arm64
           file: llamara-backend/src/main/docker/Dockerfile.jvm
           context: .
           push: ${{ github.event_name != 'pull_request' }}

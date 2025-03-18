@@ -37,3 +37,7 @@ jobs:
       packages: write
       id-token: write
     uses: llamara-ai/llamara-backend/.github/workflows/build.yaml@main
+    with:
+        container-image-name: llamara-ai/llamara
+    secrets:
+      github-token: ${{ secrets.GITHUB_TOKEN }}

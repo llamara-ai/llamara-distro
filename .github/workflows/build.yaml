@@ -6,16 +6,16 @@ on:
     types: [build]
   workflow_dispatch:
   push:
-    branches: ['main']
-    paths-ignore: ['**/*.md']
-  # Build release container:
+    branches: ["main"]
+    paths-ignore: ["**/*.md"]
+    # Build release container:
     tags:
-      - 'v*.*'
-      - 'v*.*.*'
+      - "v*.*"
+      - "v*.*.*"
   # Dry run for PRs:
   pull_request:
-    branches: ['main']
-    paths-ignore: ['**/*.md']
+    branches: ["main"]
+    paths-ignore: ["**/*.md"]
 
 permissions:
   contents: write
@@ -38,7 +38,7 @@ jobs:
       id-token: write
     uses: llamara-ai/llamara-backend/.github/workflows/build.yaml@main
     with:
-        container-image-name: llamara-ai/llamara
-        container-image-type: Distribution
+      container-image-name: llamara-ai/llamara
+      container-image-type: Distribution
     secrets:
       github-token: ${{ secrets.GITHUB_TOKEN }}

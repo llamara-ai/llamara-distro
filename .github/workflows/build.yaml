@@ -29,6 +29,8 @@ jobs:
     permissions:
       contents: write
     uses: llamara-ai/llamara-frontend/.github/workflows/build.yaml@main
+    with:
+      ref: ${{ github.event_name != 'pull_request' && github.ref_name || 'main' }}
 
   backend:
     needs: frontend
@@ -38,6 +40,7 @@ jobs:
       id-token: write
     uses: llamara-ai/llamara-backend/.github/workflows/build.yaml@main
     with:
+      ref: ${{ github.event_name != 'pull_request' && github.ref_name || 'main' }}
       container-image-name: llamara-ai/llamara
       container-image-type: Distribution
     secrets:

@@ -41,6 +41,7 @@ jobs:
     uses: llamara-ai/llamara-backend/.github/workflows/build.yaml@main
     with:
       ref: ${{ github.event_name != 'pull_request' && github.ref_name || 'main' }}
+      container-image-push: ${{ github.event_name != 'pull_request' }}
       container-image-name: llamara-ai/llamara
       container-image-type: Distribution
     secrets:

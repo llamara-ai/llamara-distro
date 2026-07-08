@@ -8,6 +8,10 @@ as well as possibly serving research findings in an accessible way to the public
 > Source code for LLAMARA Backend can be found at [llamara-ai/llamara-backend](https://github.com/llamara-ai/llamara-backend),
 > and the source code for LLAMARA Frontend can be found at [llamara-ai/llamara-frontend](https://github.com/llamara-ai/llamara-frontend).
 
+> [!WARNING]
+> This project is not maintained anymore.
+> Refer to [LLAMARA Backend](https://github.com/llamara-ai/llamara-backend) for more information.
+
 LLAMARA Distribution is a ready-to-use build of LLAMARA Backend that includes LLAMARA Frontend as well.
 
 It is published as a [Docker container](https://github.com/orgs/llamara-ai/packages/container/package/llamara) and can be [deployed using Docker Compose](https://github.com/llamara-ai/llamara-deployment-docker).
